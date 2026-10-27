@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mahim AI Trading Scanner</title>
+<style>
+:root{--bg:#0b1220;--panel:#121c2d;--panel2:#18263a;--line:#2a3a51;--text:#edf4ff;--muted:#9db0ca;--green:#30d69a;--red:#ff6b78;--yellow:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(140deg,#08101d,#0e1a2b 55%,#10182a);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:24px max(18px,calc((100% - 1180px)/2));border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#32d69b,#4b8dff);display:grid;place-items:center;color:#071421;font-weight:900;font-size:20px}.brand h1{font-size:19px;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.tag{border:1px solid #315847;color:#83edc0;background:#102a25;padding:7px 10px;border-radius:99px;font-size:12px}
+main{max-width:1180px;margin:24px auto;padding:0 18px 40px}.notice{background:#2a2417;border:1px solid #68522b;color:#ffe0a0;border-radius:12px;padding:13px 15px;font-size:13px;line-height:1.6;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}.card{background:rgba(18,28,45,.94);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}.card h2{font-size:16px;margin:0 0 14px}.sub{color:var(--muted);font-size:12px;line-height:1.6}
+label{display:block;color:#cbd8eb;font-size:13px;margin:12px 0 6px}input,select,button{font:inherit}input[type=text],input[type=number],select{width:100%;background:#0b1423;border:1px solid #34465f;color:var(--text);border-radius:9px;padding:10px 11px;outline:none}input:focus,select:focus{border-color:#52b7ff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.upload{border:1px dashed #49617d;border-radius:12px;min-height:150px;display:grid;place-items:center;text-align:center;padding:16px;background:#0d1727;cursor:pointer}.upload input{max-width:100%;margin-top:10px}.preview{max-width:100%;max-height:300px;border-radius:9px;display:none;margin:12px auto 0}
+button{border:0;border-radius:10px;padding:11px 14px;cursor:pointer;font-weight:700}.primary{background:linear-gradient(100deg,#31d69a,#5eb9ff);color:#071421;width:100%;margin-top:16px}.secondary{background:#24354c;color:var(--text);border:1px solid #3a506d}.smallbtn{padding:7px 10px;font-size:12px}
+.result{border-radius:13px;padding:18px;background:#0c1727;border:1px solid var(--line);margin-top:14px}.signal{font-size:27px;font-weight:850;letter-spacing:.5px}.signal.up{color:var(--green)}.signal.down{color:var(--red)}.signal.wait{color:var(--yellow)}.meter{height:7px;background:#26354a;border-radius:99px;overflow:hidden;margin:10px 0}.meter span{height:100%;display:block;width:0;background:linear-gradient(90deg,#ffd166,#30d69a);transition:width .2s}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.chip{background:#1c2b40;border:1px solid #30445e;padding:5px 8px;border-radius:7px;font-size:11px;color:#c7d6eb}
+#chart{height:430px;border-radius:10px;overflow:hidden;background:#0a1422}#chart iframe{width:100%;height:100%;border:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.stat{background:#0c1727;border:1px solid var(--line);padding:12px;border-radius:10px}.stat b{font-size:20px;display:block}.stat span{font-size:11px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:10px 7px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}.historywrap{overflow:auto}.win{color:var(--green)}.loss{color:var(--red)}.pending{color:var(--yellow)}
+.footer{color:var(--muted);font-size:12px;line-height:1.7;margin-top:18px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}#chart{height:350px}}@media(max-width:520px){header{padding:18px}.row{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}main{margin-top:15px}.card{padding:14px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">M</div><div><h1>MAHIM AI TRADING SCANNER</h1><p>Real-market chart analysis · Practice & track results</p></div></div><span class="tag">BETA · Analysis assistant</span></header>
+<main>
+<div class="notice"><b>ঝুঁকি সতর্কতা:</b> এই সংস্করণটি নিশ্চিত AI prediction বা ৮০% accuracy দেয় না। TradingView চার্ট আলাদা data source থেকে আসে; এটি Pocket Option-এর নিজস্ব feed নয়। প্রথমে demo account-এ পরীক্ষা করো। স্ক্রিনশটের ছবি একা দেখে এই পেজ স্বয়ংক্রিয়ভাবে ক্যান্ডেল/দাম শনাক্ত করে না—নিচের indicator values দিলে নিয়মভিত্তিক বিশ্লেষণ করে।</div>
+<div class="grid">
+<section class="card">
+<h2>১. Chart screenshot ও market settings</h2>
+<div class="upload"><div><b>স্ক্রিনশট বেছে নাও</b><div class="sub">PNG / JPG · শুধু preview, সার্ভারে আপলোড হয় না</div><input type="file" id="shot" accept="image/*"></div></div><img id="preview" class="preview" alt="Uploaded chart preview">
+<div class="row">
+<div><label for="accountMode">Account mode (manual use only)</label><select id="accountMode"><option value="demo">Demo balance</option><option value="real">Real balance — extra caution</option></select></div>
+<div><label for="asset">Asset / Pair</label><select id="asset"><option value="FX:EURUSD">EUR/USD</option><option value="FX:GBPUSD">GBP/USD</option><option value="FX:USDJPY">USD/JPY</option><option value="FX:AUDUSD">AUD/USD</option><option value="OANDA:XAUUSD">Gold (XAU/USD)</option><option value="BINANCE:BTCUSDT">BTC/USDT</option><option value="NASDAQ:AAPL">AAPL</option></select></div>
+<div><label for="tf">Timeframe</label><select id="tf"><option value="1">1 minute</option><option value="5">5 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option><option value="D">1 day</option></select></div>
+</div>
+<div class="row">
+<div><label for="emaFast">Fast EMA</label><input type="number" id="emaFast" step="any" placeholder="যেমন 1.0845"></div>
+<div><label for="emaSlow">Slow EMA</label><input type="number" id="emaSlow" step="any" placeholder="যেমন 1.0839"></div>
+</div>
+<div class="row">
+<div><label for="rsi">RSI (0–100)</label><input type="number" id="rsi" min="0" max="100" placeholder="যেমন 58"></div>
+<div><label for="macd">MACD direction</label><select id="macd"><option value="up">Bullish / উপরে</option><option value="down">Bearish / নিচে</option><option value="flat">Neutral / নিরপেক্ষ</option></select></div>
+</div>
+<div class="row">
+<div><label for="trend">Price action / trend</label><select id="trend"><option value="up">Higher highs / bullish</option><option value="down">Lower lows / bearish</option><option value="side">Sideways / range</option></select></div>
+<div><label for="support">Support/Resistance</label><select id="support"><option value="none">কোনো কাছের level নেই</option><option value="support">Support-এর কাছে</option><option value="resistance">Resistance-এর কাছে</option></select></div>
+</div>
+<button class="primary" id="analyze">ANALYZE MARKET</button>
+<div class="result" aria-live="polite"><div class="sub">POTENTIAL DIRECTION</div><div id="signal" class="signal wait">WAIT</div><div id="summary" class="sub">Indicator values দিয়ে Analyze Market চাপো।</div><div class="meter"><span id="meter"></span></div><div class="sub" id="strength">Signal agreement: —</div><div class="chips" id="reasons"></div></div>
+<div class="footer">স্কোরটি indicator-গুলোর agreement score, জেতার সম্ভাবনা বা accuracy নয়। পর্যাপ্ত তথ্য না থাকলে WAIT বেছে নেওয়া নিরাপদ।</div>
+</section>
+<section class="card">
+<h2>২. Live chart (TradingView)</h2>
+<div class="sub" style="margin-bottom:12px">Asset বা timeframe বদলালে চার্ট আপডেট হবে। TradingView chart-এ দেওয়া symbol Pocket Option-এর instrument-এর সঙ্গে এক নাও হতে পারে।</div>
+<div id="chart"><iframe id="tv" title="TradingView market chart" loading="lazy" src="https://www.tradingview.com/widgetembed/?symbol=FX%3AEURUSD&interval=1&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=0b1423&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1&studies=RSI%40tv-basicstudies%7CMACD%40tv-basicstudies" allowfullscreen></iframe></div>
+<div class="stats"><div class="stat"><b id="total">0</b><span>Logged trades</span></div><div class="stat"><b id="wins">0</b><span>Wins</span></div><div class="stat"><b id="rate">—</b><span>Observed win rate</span></div></div>
+<div class="sub">Win rate কেবল তুমি যেসব ট্রেডের ফলাফল লগ করবে তার হিসাব; ভবিষ্যৎ performance-এর নিশ্চয়তা নয়।</div>
+</section>
+</div>
+<section class="card" style="margin-top:18px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">৩. Signal & trade journal</h2><button class="secondary smallbtn" id="clear">Clear history</button></div>
+<div class="row" style="margin-top:10px">
+<div><label for="outcome">শেষ ট্রেডের ফলাফল</label><select id="outcome"><option value="win">Win</option><option value="loss">Loss</option><option value="skip">Skipped / no trade</option></select></div>
+<div style="display:flex;align-items:end"><button class="secondary" id="log" style="width:100%">Log current signal result</button></div>
+</div>
+<div class="historywrap" style="margin-top:12px"><table><thead><tr><th>Time</th><th>Asset</th><th>Signal</th><th>Score</th><th>Result</th></tr></thead><tbody id="history"><tr><td colspan="5" class="sub">এখনো কোনো রেকর্ড নেই।</td></tr></tbody></table></div>
+<div class="footer">তোমার journal এই browser-এর local storage-এ থাকে। অন্য browser/device-এ নিজে থেকে sync হবে না।</div>
+</section>
+<div class="footer">এই টুল শিক্ষামূলক। এটি financial advice নয়, trade execution করে না এবং loss ঠেকানোর নিশ্চয়তা দেয় না। OTC, binary options এবং short-expiry trades অত্যন্ত ঝুঁকিপূর্ণ। হারানো টাকা ফেরত পাওয়ার জন্য stake বাড়িও না।</div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+let current = {signal:'WAIT', score:0, asset:'FX:EURUSD'};
+const shot = $('shot');
+shot.addEventListener('change', () => {
+ const f=shot.files && shot.files[0]; if(!f) return;
+ if(!f.type.startsWith('image/')) { alert('একটি image file নির্বাচন করো।'); return; }
+ const url=URL.createObjectURL(f); $('preview').src=url; $('preview').style.display='block';
+});
+function updateChart(){
+ const sym=$('asset').value, tf=$('tf').value;
+ const url='https://www.tradingview.com/widgetembed/?symbol='+encodeURIComponent(sym)+'&interval='+encodeURIComponent(tf)+'&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=0b1423&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1&studies=RSI%40tv-basicstudies%7CMACD%40tv-basicstudies';
+ $('tv').src=url;
+}
+$('asset').addEventListener('change',updateChart); $('tf').addEventListener('change',updateChart);
+$('analyze').addEventListener('click',()=>{
+ const fast=parseFloat($('emaFast').value), slow=parseFloat($('emaSlow').value), rsi=parseFloat($('rsi').value);
+ const macd=$('macd').value, trend=$('trend').value, level=$('support').value;
+ const reasons=[]; let votes=[]; let n=0;
+ if(Number.isFinite(fast)&&Number.isFinite(slow)){n++;votes.push(fast>slow?1:fast<slow?-1:0);reasons.push(fast>slow?'Fast EMA above Slow EMA':fast<slow?'Fast EMA below Slow EMA':'EMAs equal');}
+ if(Number.isFinite(rsi)&&rsi>=0&&rsi<=100){
+   n++;
+   if(rsi>=70){votes.push(0);reasons.push('RSI overbought: no chase');}
+   else if(rsi<=30){votes.push(0);reasons.push('RSI oversold: wait for confirmation');}
+   else if(rsi>55){votes.push(1);reasons.push('RSI bullish momentum');}
+   else if(rsi<45){votes.push(-1);reasons.push('RSI bearish momentum');}
+   else {votes.push(0);reasons.push('RSI neutral');}
+ }
+ if(macd!=='flat'){n++;votes.push(macd==='up'?1:-1);reasons.push('MACD '+(macd==='up'?'bullish':'bearish'));} else {n++;votes.push(0);reasons.push('MACD neutral');}
+ if(trend!=='side'){n++;votes.push(trend==='up'?1:-1);reasons.push('Trend '+(trend==='up'?'bullish':'bearish'));} else {n++;votes.push(0);reasons.push('Sideways market: avoid weak setup');}
+ const bullish=votes.filter(v=>v===1).length, bearish=votes.filter(v=>v===-1).length;
+ const validVotes=bullish+bearish;
+ let sig='WAIT', cls='wait', score=0;
+ const nearLevel = level==='support'||level==='resistance';
+ const rsiExtreme = Number.isFinite(rsi)&&(rsi>=70||rsi<=30);
+ // Conservative confluence gate: require at least 3 directional votes and 75% agreement,
+ // no extreme RSI, and no nearby support/resistance ambiguity.
+ if(n>=4 && !rsiExtreme && !nearLevel && validVotes>=3){
+   if(bullish>=3 && bullish/validVotes>=0.75){sig='UP / CALL';cls='up';score=Math.round(bullish/n*100);}
+   else if(bearish>=3 && bearish/validVotes>=0.75){sig='DOWN / PUT';cls='down';score=Math.round(bearish/n*100);}
+ }
+ if(nearLevel) reasons.push('Nearby support/resistance: wait for clear confirmation');
+ if(rsiExtreme) reasons.push('Extreme RSI blocks a signal');
+ if(sig==='WAIT') reasons.push('Confluence filter not met — WAIT');
+ current={signal:sig,score:score,asset:$('asset').value,mode:$('accountMode').value};
+ $('signal').textContent=sig; $('signal').className='signal '+cls;
+ $('summary').textContent=sig==='WAIT'?'Setup did not pass the strict filter. This is not a prediction of the next candle.':(sig.startsWith('UP')?'Bullish indicators agree; the trade can still lose.':'Bearish indicators agree; the trade can still lose.');
+ $('meter').style.width=score+'%'; $('strength').textContent='Indicator agreement: '+score+'% · not win probability or verified accuracy';
+ $('reasons').innerHTML=''; reasons.forEach(r=>{const e=document.createElement('span');e.className='chip';e.textContent=r;$('reasons').appendChild(e);});
+});
+function getHistory(){try{return JSON.parse(localStorage.getItem('mahimTradeHistory')||'[]')}catch(e){return []}}
+function saveHistory(h){localStorage.setItem('mahimTradeHistory',JSON.stringify(h))}
+function render(){
+ const h=getHistory(); $('total').textContent=h.filter(x=>x.result!=='Skipped').length;
+ const wins=h.filter(x=>x.result==='Win').length, decided=h.filter(x=>x.result==='Win'||x.result==='Loss').length;
+ $('wins').textContent=wins; $('rate').textContent=decided?Math.round(wins/decided*100)+'%':'—';
+ $('history').innerHTML='';
+ if(!h.length){$('history').innerHTML='<tr><td colspan="5" class="sub">এখনো কোনো রেকর্ড নেই।</td></tr>';return;}
+ h.slice().reverse().forEach(x=>{const tr=document.createElement('tr');[x.time,x.asset,x.signal,x.score+'%',x.result].forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;if(i===4)td.className=x.result==='Win'?'win':x.result==='Loss'?'loss':'pending';tr.appendChild(td)});$('history').appendChild(tr)});
+}
+$('log').addEventListener('click',()=>{
+ const result=$('outcome').value==='win'?'Win':$('outcome').value==='loss'?'Loss':'Skipped';
+ const h=getHistory();h.push({time:new Date().toLocaleString(),asset:current.asset+' ('+(current.mode==='real'?'Real':'Demo')+')',signal:current.signal,score:current.score,result});saveHistory(h);render();
+});
+$('clear').addEventListener('click',()=>{if(confirm('সব local trade history মুছে ফেলবে?')){localStorage.removeItem('mahimTradeHistory');render();}});
+render();
+</script>
+</body>
+</html>
